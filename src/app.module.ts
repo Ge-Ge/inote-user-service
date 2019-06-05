@@ -9,11 +9,15 @@ import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 
 @Module({
-  imports: [ConfigModule, UserModule, TypeOrmModule.forRootAsync({
-    imports: [ConfigModule],
-    useFactory: (configService: ConfigService) => configService.mysql(),
-    inject: [ConfigService],
-  })],
+  imports: [
+    ConfigModule,
+    UserModule,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => configService.mysql(),
+      inject: [ConfigService],
+    }),
+  ],
   controllers: [AppController, EmailController, CaptchaController],
   providers: [AppService],
 })
