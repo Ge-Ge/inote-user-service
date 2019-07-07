@@ -7,11 +7,19 @@ import { EmailController } from './app/email/email.controller';
 import { CaptchaController } from './app/captcha/captcha.controller';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { RedisModule } from './redis/redis.module';
+import { AuthModule } from './app/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule,
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => configService.redis(),
+      inject: [ConfigService],
+    }),
     UserModule,
+    AuthModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => configService.mysql(),
