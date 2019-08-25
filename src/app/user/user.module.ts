@@ -5,9 +5,13 @@ import { User } from './user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  // 依赖 其他module
+  imports: [
+    TypeOrmModule.forFeature([User]),
+  ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService], // 为controllers提供userService
+  exports: [UserService],
 })
 export class UserModule {
 }

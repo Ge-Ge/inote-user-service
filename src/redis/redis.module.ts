@@ -30,6 +30,7 @@ export class RedisModule {
         useFactory: options.useFactory,
         inject: options.inject,
       }],
+      exports: [RedisService],
     };
   }
 }

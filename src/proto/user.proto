@@ -4,13 +4,31 @@ package user;
 
 service UserService {
   rpc FindOne (HeroById) returns (User) {}
+  rpc FindAll (PageInfo) returns (UserList) {}
+  rpc Create (User) returns (User) {}
+  rpc Delete (HeroById) returns (User) {}
+  rpc Update (User) returns (User) {}
 }
 
 message HeroById {
   int32 id = 1;
 }
 
+message PageInfo {
+int32 count = 1;
+optional string after = 2;
+optional string before = 3;
+optional int32 skip = 4;
+}
+
 message User {
-  int32 id = 1;
-  string name = 2;
+  string username = 2;
+  optional int32 id = 1;
+  optional string password = 3;
+  optional string email = 4;
+  optional string status = 5;
+}
+
+message UserList {
+  repeated User users = 1;
 }

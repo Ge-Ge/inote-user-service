@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestMiddleware, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,8 +8,10 @@ import { CaptchaController } from './app/captcha/captcha.controller';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { RedisModule } from './redis/redis.module';
-import { AuthModule } from './app/auth/auth.module';
-
+import { AuthModule } from './auth/auth.module';
+import { Auth2Module } from './app/auth/auth.module';
+import { Model } from './app/auth/model';
+import { AuthService } from './auth/auth.service';
 @Module({
   imports: [
     ConfigModule,
@@ -19,7 +21,11 @@ import { AuthModule } from './app/auth/auth.module';
       inject: [ConfigService],
     }),
     UserModule,
-    AuthModule,
+    AuthModule.forRootAsync({
+      imports: [Auth2Module],
+      useFactory: (model: Model) => model,
+      inject: [Model],
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => configService.mysql(),
@@ -27,7 +33,13 @@ import { AuthModule } from './app/auth/auth.module';
     }),
   ],
   controllers: [AppController, EmailController, CaptchaController],
-  providers: [AppService],
+  providers: [AppService, { provide: 'Test', useValue: 1 }],
 })
-export class AppModule {
+export class AppModule implements NestModule {
+  constructor(private readonly authService: AuthService) {}
+
+  configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {
+    return consumer.apply(this.authService.token()).forRoutes('token');
+  }
+
 }

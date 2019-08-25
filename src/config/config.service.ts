@@ -15,13 +15,22 @@ export class ConfigService {
   mysql(): any {
     return {
       type: 'mysql',
-      host: '127.0.0.1',
+      host: this.get('SITE_IP') || '127.0.0.1',
       port: this.get('MYSQL_PORT') || '3306',
       username: this.get('MYSQL_USER') || 'admin',
       password: this.get('MYSQL_PASSWORD') || '',
       database: this.get('MYSQL_DATABASE'),
       entities: [path.join(__dirname, '../') + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      logging: true,
+    };
+  }
+
+  redis(): any {
+    return {
+      host: this.get('SITE_IP') || '127.0.0.1',
+      port: this.get('REDIS_PORT') || 6379,
+      password: this.get('REDIS_PASSWORD') || '',
     };
   }
 }
