@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { Auth2Module } from './app/auth/auth.module';
 import { Model } from './app/auth/model';
 import { AuthService } from './auth/auth.service';
+
 @Module({
   imports: [
     ConfigModule,
