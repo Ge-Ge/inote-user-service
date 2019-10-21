@@ -1,6 +1,7 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Global, Module } from '@nestjs/common';
 import { AuthService, AUTH_MODEL } from './auth.service';
 
+@Global()
 @Module({
   providers: [AuthService],
   exports: [AuthService],

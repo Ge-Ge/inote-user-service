@@ -1,9 +1,8 @@
 import { Controller, Get, Post, UseGuards, Body } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GrpcMethod } from '@nestjs/microservices';
-// import { OAuth } from '../../auth/auth.guard';
-import { User } from './user.entity';
 import { OAuth } from '../../auth/auth.guard';
+import { User } from './user.entity';
 
 @Controller('user')
 export class UserController {
@@ -56,9 +55,9 @@ export class UserController {
     return userInfo;
   }
 
-/*  @Post('login')
+  @Post('login')
   @UseGuards(OAuth('authenticate'))
   async authenticate(@Body() user: User) {
     return true;
-  }*/
+  }
 }
