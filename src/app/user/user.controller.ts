@@ -20,7 +20,8 @@ export class UserController {
   @ApiResponse({ status: 201, description: '登录'})
   @Post('login')
   async login(@Body() user: User) {
-    const userInfo = await this.userService.getUserByEmail(user.email);
+    // TODO 校验密码
+    const userInfo = await this.userService.loginByEmail(user.email, user.password);
     return userInfo;
   }
 

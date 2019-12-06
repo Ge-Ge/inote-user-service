@@ -9,9 +9,9 @@ export class OAuthCanActivate implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const func = await this.authService[this.type]();
+    const response = context.switchToHttp().getResponse();
     try {
-      const token = await func(request);
+      const token = await this.authService.authenticate(request, response);
       if (!token) { return false; }
     } catch (e) {
       throw new UnauthorizedException(e);

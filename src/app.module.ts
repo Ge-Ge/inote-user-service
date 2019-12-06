@@ -1,8 +1,6 @@
 import { MiddlewareConsumer, Module, NestMiddleware, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './app/user/user.module';
-// import { EmailController } from './app/email/email.controller';
-// import { CaptchaController } from './app/captcha/captcha.controller';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { RedisModule } from './redis/redis.module';
@@ -31,17 +29,14 @@ import { AuthService } from './auth/auth.service';
     }),
     UserModule,
   ],
-  controllers: [
-    // EmailController,
-    // CaptchaController,
-  ],
+  controllers: [],
   providers: [],
 })
 export class AppModule implements NestModule {
   constructor(private readonly authService: AuthService) {}
 
   configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {
-    return consumer.apply(this.authService.token()).forRoutes('token');
+    // return consumer.apply(this.authService.authenticate()).forRoutes('authenticate');
   }
 
 }
