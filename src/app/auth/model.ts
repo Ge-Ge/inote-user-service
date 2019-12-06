@@ -22,11 +22,8 @@ export class Model {
   }
 
   async getUser(username, password) {
-    const existsUser = await this.userService.getUserByEmail(username);
-    if (existsUser) {
-      return { id: existsUser.id };
-    }
-    throw { message: '用户不存在' };
+    const existsUser = await this.userService.loginByEmail(username, password);
+    return existsUser;
   }
 
   async saveToken(token, client, user) {
@@ -43,7 +40,7 @@ export class Model {
 
   async getAccessToken(bearerToken) {
     const token = await this.redis.hgetall(key(LOGIN_ACCESS_TOKEN.key, bearerToken));
-    if (!token || !token.accessTokenExpiresAt) { throw new UnauthorizedException('请登录, getAccessToken Error'); }
+    if (!token || !token.accessTokenExpiresAt) { return null; }
     token.accessTokenExpiresAt = new Date(token.accessTokenExpiresAt);
     token.refreshTokenExpiresAt = new Date(token.refreshTokenExpiresAt);
     token.user = JSON.parse(token.user);
@@ -56,7 +53,7 @@ export class Model {
     let token = await this.redis.get(key(LOGIN_REFRESH_TOKEN.key, refreshToken));
     // console.log(token);
     token = await this.redis.hgetall(key(LOGIN_ACCESS_TOKEN.key, token));
-    if (!token || !token.accessTokenExpiresAt) { throw new UnauthorizedException('请登录, getAccessToken Error'); }
+    if (!token || !token.accessTokenExpiresAt) { throw new UnauthorizedException('请登录, getRefreshToken Error'); }
     token.refreshToken = refreshToken;
     token.accessTokenExpiresAt = new Date(token.accessTokenExpiresAt);
     token.refreshTokenExpiresAt = new Date(token.refreshTokenExpiresAt);

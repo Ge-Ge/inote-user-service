@@ -1,6 +1,6 @@
-import { Injectable, ExecutionContext, Inject } from '@nestjs/common';
+import { Injectable, ExecutionContext, Inject, HttpException } from '@nestjs/common';
 import OAuth2Server =  require('oauth2-server');
-const { Request, Response } = OAuth2Server;
+const { Request, Response, OAuthError } = OAuth2Server;
 
 export const AUTH_MODEL = Symbol('AUTH_MODEL');
 
@@ -27,9 +27,18 @@ export class AuthService {
   }
 
   // 根据授权码/账号密码，授予token
-  token(req, res, options?) {
-    const request = new Request(req);
-    const response = new Response(res);
-    return this.server.token(request, response, options);
+  async token(req, res, options?) {
+    try {
+      const request = new Request(req);
+      const response = new Response(res);
+      const token = await this.server.token(request, response, options);
+      return token;
+    } catch (e) {
+      if (e instanceof OAuthError) {
+        throw new HttpException({ code: e.code, message: e.message }, e.code);
+      }
+      throw e;
+    }
+
   }
 }

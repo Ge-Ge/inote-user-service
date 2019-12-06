@@ -1,41 +1,38 @@
-import { Controller, Get, Post, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Body, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GrpcMethod } from '@nestjs/microservices';
 import { OAuth } from '../../auth/auth.guard';
+import { AuthService } from '../../auth/auth.service';
 import { User } from './user.entity';
 import { ApiResponse } from '@nestjs/swagger';
-
+import { Request } from 'express';
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {
+  constructor(private readonly userService: UserService, private readonly auth: AuthService) {
   }
 
   @ApiResponse({ status: 201, description: '注册'})
   @Post('register')
   async register(@Body() user: User) {
-    await this.userService.create(user);
+    // TODO 参数校验、用户校验
+    await this.userService.register(user);
     return true;
   }
 
   @ApiResponse({ status: 201, description: '登录'})
   @Post('login')
-  async login(@Body() user: User) {
+  async login(@Req() request: Request) {
     // TODO 校验密码
-    const userInfo = await this.userService.loginByEmail(user.email, user.password);
-    return userInfo;
+    const token = await this.auth.token(request, {});
+    return token;
   }
 
   @ApiResponse({ status: 201, description: '登出'})
+  @UseGuards(OAuth('authenticate'))
   @Post('logout')
   async logout(@Body() user: User) {
-    const userInfo = await this.userService.getUserByEmail(user.email);
-    return userInfo;
-  }
-
-/*  @Post('login')
-  @UseGuards(OAuth('authenticate'))
-  async authenticate(@Body() user: User) {
+    // TODO 清楚redis 登录信息
     return true;
-  }*/
+  }
 
 }

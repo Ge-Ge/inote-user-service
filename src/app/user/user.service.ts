@@ -45,14 +45,18 @@ export class UserService {
       select: [ 'id', 'username', 'email', 'status' ],
       where: { email, password },
     });
-    if (!user) {
-      throw new ForbiddenException('账号或密码错误');
-    }
-    // redis记录登录信息
     return user;
   }
 
   getUsers() {
     return this.userRepository.find();
+  }
+
+  /**
+   * 注册用户
+   * @param user
+   */
+  register(user: User) {
+    return this.userRepository.insert(user);
   }
 }
