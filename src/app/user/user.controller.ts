@@ -22,9 +22,10 @@ export class UserController {
   @ApiResponse({ status: 201, description: '登录'})
   @Post('login')
   async login(@Req() request: Request) {
-    // TODO 校验密码
     const token = await this.auth.token(request, {});
-    return token;
+    request.cookies.set('accessToken', token.accessToken, { signed: true, expires: new Date(token.accessTokenExpiresAt) });
+    request.cookies.set('refreshToken', token.refreshToken, { signed: true, expires: new Date(token.refreshTokenExpiresAt) });
+    return token.user;
   }
 
   @ApiResponse({ status: 201, description: '登出'})

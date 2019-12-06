@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { Transport } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { join } from 'path';
+const Cookies = require('cookies').express;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,6 +24,7 @@ async function bootstrap() {
     },
   });
   await app.startAllMicroservicesAsync();
+  app.use(Cookies(['key']));
   await app.listen(3000);
 }
 bootstrap();
