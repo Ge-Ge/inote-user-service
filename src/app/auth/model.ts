@@ -63,8 +63,8 @@ export class Model {
   }
 
   revokeToken(token) {
-    this.redis.del(key(LOGIN_REFRESH_TOKEN, token.refreshToken));
-    return this.redis.del(key(LOGIN_ACCESS_TOKEN, token.accessToken)).then(num => {
+    this.redis.del(key(LOGIN_REFRESH_TOKEN.key, token.refreshToken));
+    return this.redis.del(key(LOGIN_ACCESS_TOKEN.key, token.accessToken)).then(num => {
       return !!num;
     }).catch(err => {
       console.log(err, '删除token出错');

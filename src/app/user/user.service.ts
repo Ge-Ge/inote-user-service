@@ -57,6 +57,14 @@ export class UserService {
    * @param user
    */
   register(user: User) {
+    const { email } = user;
+    const exist = this.userRepository.findOne({
+      select: [ 'id', 'username', 'email', 'status' ],
+      where: { email },
+    });
+    if (exist) {
+      throw new ForbiddenException('用户已注册');
+    }
     return this.userRepository.insert(user);
   }
 }

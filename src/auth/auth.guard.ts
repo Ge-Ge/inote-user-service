@@ -13,6 +13,7 @@ export class OAuthCanActivate implements CanActivate {
     try {
       const token = await this.authService.authenticate(request, response);
       if (!token) { return false; }
+      response.locals.token = token;
     } catch (e) {
       throw new UnauthorizedException(e);
     }
